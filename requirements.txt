@@ -1,0 +1,7 @@
+ipykernel
+pandas
+geopandas
+matplotlib
+seaborn
+pyreadstat
+openpyxl
