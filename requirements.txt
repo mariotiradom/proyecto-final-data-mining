@@ -6,3 +6,4 @@ seaborn
 pyreadstat
 openpyxl
 mlxtend
+scikit-learn
