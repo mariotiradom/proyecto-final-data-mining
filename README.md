@@ -76,6 +76,7 @@ pip install -r requirements.txt
 ### 3. Ejecutar análisis
 - Primero ejecutar los notebooks **00** (en orden) para limpiar datos
 - Luego ejecutar **01-tareas_dm.ipynb** para el análisis de data mining
+- Para el dashboard interactivo, ejecutar `streamlit run streamlit_app.py`
 
 ## 📊 Visualizaciones Generadas
 
@@ -85,6 +86,7 @@ pip install -r requirements.txt
 - Visualizaciones 3D de clusters (K-Means, jerárquico, NMF)
 - Métricas de evaluación de clustering
 - Pairplot de variables con alta correlación
+- Dashboard interactivo en Streamlit con mapa choropleth nacional y distrital por región
 
 ## 📈 Resultados Clave
 
