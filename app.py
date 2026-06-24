@@ -1,5 +1,5 @@
 # app.py
-# Dashboard de presentación: Vulnerabilidad territorial y violencia contra la mujer en Lima Metropolitana, 2025
+# Dashboard: Vulnerabilidad territorial y violencia contra la mujer en Lima Metropolitana, 2025
 # Ejecutar con: streamlit run app.py
 
 from pathlib import Path
@@ -16,61 +16,82 @@ st.set_page_config(
 # -----------------------------
 st.markdown("""
 <style>
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap');
+
+* { font-family: 'Inter', sans-serif; }
+
 .block-container {
     padding-top: 1.4rem;
     padding-bottom: 2rem;
 }
 .hero {
-    padding: 1.2rem 1.4rem;
-    border-radius: 22px;
+    padding: 1.6rem 1.8rem;
+    border-radius: 16px;
     background: linear-gradient(135deg, #3b0a45 0%, #6d2a7a 55%, #9b4bb3 100%);
     color: white;
-    margin-bottom: 1rem;
+    margin-bottom: 1.2rem;
 }
 .hero h1 {
-    font-size: 2rem;
-    margin-bottom: 0.2rem;
+    font-size: 1.85rem;
+    font-weight: 700;
+    margin-bottom: 0.3rem;
+    letter-spacing: -0.3px;
 }
 .hero p {
-    font-size: 1rem;
-    opacity: 0.93;
+    font-size: 0.97rem;
+    opacity: 0.88;
+    max-width: 680px;
+    line-height: 1.5;
 }
 .card {
-    padding: 1rem;
-    border-radius: 18px;
-    border: 1px solid #e8e8e8;
+    padding: 1.1rem 1.2rem;
+    border-radius: 14px;
+    border: 1px solid #ebebeb;
     background: #ffffff;
-    box-shadow: 0 2px 8px rgba(0,0,0,0.04);
-    min-height: 122px;
+    box-shadow: 0 1px 6px rgba(0,0,0,0.05);
+    min-height: 130px;
 }
 .card h3 {
-    font-size: 1rem;
-    margin-bottom: 0.4rem;
+    font-size: 0.95rem;
+    font-weight: 600;
+    margin-bottom: 0.5rem;
+    color: #1a1a1a;
 }
 .card p {
-    font-size: 0.92rem;
-    color: #4b4b4b;
+    font-size: 0.9rem;
+    color: #555;
+    line-height: 1.55;
 }
 .insight {
-    padding: 0.9rem 1rem;
-    border-left: 6px solid #6d2a7a;
+    padding: 1rem 1.1rem;
+    border-left: 4px solid #6d2a7a;
     background: #faf4fd;
-    border-radius: 12px;
-    margin-top: 0.7rem;
+    border-radius: 0 10px 10px 0;
+    margin-top: 0.8rem;
+    font-size: 0.91rem;
+    color: #3a3a3a;
+    line-height: 1.6;
 }
 .warningbox {
     padding: 0.9rem 1rem;
-    border-left: 6px solid #e67e22;
+    border-left: 4px solid #e67e22;
     background: #fff7ed;
-    border-radius: 12px;
-}
-.small {
-    font-size: 0.86rem;
-    color: #666;
+    border-radius: 0 10px 10px 0;
+    font-size: 0.9rem;
 }
 .figure-title {
-    font-weight: 700;
-    margin-bottom: 0.3rem;
+    font-weight: 600;
+    font-size: 1.05rem;
+    margin-bottom: 0.2rem;
+    color: #1a1a1a;
+}
+.step-label {
+    font-size: 0.78rem;
+    font-weight: 600;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: #6d2a7a;
+    margin-bottom: 0.15rem;
 }
 </style>
 """, unsafe_allow_html=True)
@@ -83,57 +104,48 @@ GRAFICOS_DIR = Path("graficos")
 FIGURAS = {
     "Mapa territorial": {
         "archivo": "mapa_violencia_lima.png",
-        "descripcion": "Distribución distrital de la TVM y principales modalidades de violencia.",
-        "lectura": "La violencia registrada no se distribuye de manera homogénea en Lima Metropolitana. La violencia física y psicológica presentan mayor presencia territorial, mientras que la violencia sexual aparece más focalizada.",
-        "uso": "Úsalo para abrir la exposición y demostrar que el problema tiene una dimensión territorial."
+        "descripcion": "Distribución distrital de la tasa de violencia contra la mujer (TVM) y principales modalidades de violencia.",
+        "lectura": "La violencia registrada presenta una distribución heterogénea en Lima Metropolitana. La violencia física y psicológica muestran mayor presencia territorial, mientras que la violencia sexual aparece más concentrada en zonas específicas. Esta variabilidad espacial sugiere que los factores explicativos operan a escala local."
     },
     "Vulnerabilidad vs TVM": {
         "archivo": "correlacion_vulnerabilidad_tvm.png",
-        "descripcion": "Relación entre índice de vulnerabilidad territorial y TVM.",
-        "lectura": "Los distritos aparecen dispersos y no muestran una tendencia lineal positiva clara. Esto indica que una mayor vulnerabilidad territorial no siempre coincide con una mayor tasa de denuncias registradas.",
-        "uso": "Úsalo para explicar el hallazgo central: la relación entre vulnerabilidad y denuncia registrada es compleja."
+        "descripcion": "Relación entre el índice de vulnerabilidad territorial y la TVM por distrito.",
+        "lectura": "La dispersión de los distritos no revela una tendencia lineal positiva consistente entre vulnerabilidad territorial y tasa de denuncias registradas. Este hallazgo es central: una mayor precariedad estructural no se traduce necesariamente en más denuncias, lo que abre la posibilidad de que existan barreras de acceso que operan de forma diferenciada según el territorio."
     },
     "Matriz de correlación": {
         "archivo": "matriz_correlacion.png",
-        "descripcion": "Asociaciones entre variables territoriales y modalidades de violencia.",
-        "lectura": "Se observan asociaciones entre indicadores de vivienda, servicios básicos, educación y conectividad. Varias variables capturan dimensiones similares de vulnerabilidad territorial.",
-        "uso": "Úsalo para justificar PCA y NMF, ya que ayudan a resumir información correlacionada."
+        "descripcion": "Mapa de calor de las asociaciones entre variables territoriales y modalidades de violencia.",
+        "lectura": "Se observan correlaciones moderadas a altas entre indicadores de calidad de vivienda, acceso a servicios básicos, nivel educativo y conectividad. La colinealidad entre estas variables sugiere que capturan dimensiones latentes comunes de vulnerabilidad territorial, lo que justifica el uso de técnicas de reducción de dimensionalidad."
     },
     "Varianza PCA": {
         "archivo": "varianza_explicada_acumulada.png",
-        "descripcion": "Varianza explicada acumulada por componentes principales.",
-        "lectura": "Los primeros componentes concentran una proporción relevante de la variabilidad de la base, permitiendo reducir la dimensionalidad sin perder gran parte de la información.",
-        "uso": "Úsalo para explicar por qué los componentes PCA sirven como base para clustering."
+        "descripcion": "Varianza explicada acumulada por componente principal.",
+        "lectura": "Los primeros componentes concentran una proporción sustancial de la variabilidad del conjunto de datos. Esta estructura permite trabajar con una representación reducida sin sacrificar la mayor parte de la información, y constituye la base sobre la cual se aplica el clustering distrital."
     },
     "Métricas K-Means": {
         "archivo": "metricas_kmeans.png",
-        "descripcion": "Método del codo, Silhouette y Davies-Bouldin para seleccionar K.",
-        "lectura": "Las métricas permiten evaluar distintos valores de K y respaldan la selección de una partición de cinco clústeres para el análisis distrital.",
-        "uso": "Úsalo para demostrar que el número de clústeres no fue elegido al azar."
+        "descripcion": "Criterios de selección del número óptimo de clústeres: método del codo, Silhouette y Davies-Bouldin.",
+        "lectura": "La evaluación conjunta de los tres criterios orienta la selección de cinco clústeres como partición más adecuada. El coeficiente Silhouette indica una separación razonable entre grupos, mientras que Davies-Bouldin confirma una compacidad interna aceptable. La decisión no responde a un umbral arbitrario sino al balance entre estas métricas."
     },
     "Clustering PCA": {
         "archivo": "cluster_pca_3d.png",
-        "descripcion": "Agrupamiento de distritos sobre componentes PCA.",
-        "lectura": "Se identifican grupos diferenciados de distritos según dimensiones de vulnerabilidad socioeconómica, educación, condiciones del hogar y conectividad.",
-        "uso": "Úsalo para presentar los perfiles territoriales diferenciados."
+        "descripcion": "Agrupamiento de distritos proyectado sobre los primeros tres componentes principales.",
+        "lectura": "Los cinco grupos identificados muestran separación en el espacio reducido, lo que evidencia perfiles territoriales diferenciados. Cada clúster reúne distritos con características socioeconómicas, educativas y de condiciones del hogar similares, permitiendo una lectura comparativa de las distintas realidades distritales de Lima."
     },
     "Clustering NMF": {
         "archivo": "clustering_nmf_3d.png",
-        "descripcion": "Agrupamiento de distritos sobre componentes NMF.",
-        "lectura": "La representación NMF complementa el PCA al construir perfiles a partir de combinaciones aditivas de variables territoriales.",
-        "uso": "Úsalo si deseas reforzar la interpretación de perfiles territoriales."
+        "descripcion": "Agrupamiento de distritos sobre factores derivados de la Factorización Matricial No Negativa (NMF).",
+        "lectura": "La representación NMF ofrece una perspectiva complementaria al PCA: al construir los factores como combinaciones aditivas de variables originales, los perfiles resultantes son más interpretables en términos sustantivos. La correspondencia entre ambas soluciones de clustering refuerza la robustez de los grupos identificados."
     },
     "Dendrograma Ward": {
         "archivo": "dendrograma_ward.png",
-        "descripcion": "Clustering jerárquico aglomerativo con método de Ward.",
-        "lectura": "El dendrograma muestra cómo los distritos se agrupan progresivamente según similitud territorial y permite contrastar la estructura encontrada con K-Means.",
-        "uso": "Úsalo para cerrar la parte de agrupamiento con una técnica complementaria."
+        "descripcion": "Dendrograma del clustering jerárquico aglomerativo con enlace de Ward.",
+        "lectura": "La estructura jerárquica muestra cómo los distritos se fusionan progresivamente según similitud territorial. El corte que define cinco grupos es consistente con la solución K-Means, lo que valida la partición desde una perspectiva metodológica independiente y sin necesidad de especificar K de antemano."
     },
     "Pairplot opcional": {
         "archivo": "pairplot_variables_alta_correlacion.png",
-        "descripcion": "Relaciones bivariadas entre variables con alta correlación.",
-        "lectura": "Permite observar patrones visuales entre variables relacionadas, aunque puede ocupar mucho espacio para el paper.",
-        "uso": "Úsalo solo en el dashboard, no necesariamente en el documento final."
+        "descripcion": "Relaciones bivariadas entre variables con alta correlación entre sí.",
+        "lectura": "La visualización en pares permite identificar patrones de dispersión no lineales y posibles valores atípicos entre las variables más correlacionadas. Complementa el análisis matricial al ofrecer una inspección visual directa de las distribuciones conjuntas."
     }
 }
 
@@ -149,34 +161,33 @@ def show_image_block(nombre: str, info: dict):
     else:
         st.markdown(f"""
         <div class="warningbox">
-        No se encontró la imagen <b>{info['archivo']}</b> dentro de la carpeta <b>GRAFICOS</b>.<br>
-        Coloca el archivo en: <code>GRAFICOS/{info['archivo']}</code>
+        Imagen no encontrada: <b>{info['archivo']}</b><br>
+        Ruta esperada: <code>graficos/{info['archivo']}</code>
         </div>
         """, unsafe_allow_html=True)
     st.markdown(f"""
     <div class="insight">
-    <b>Lectura del gráfico:</b> {info['lectura']}<br><br>
-    <b>Cómo presentarlo:</b> {info['uso']}
+    {info['lectura']}
     </div>
     """, unsafe_allow_html=True)
 
 # -----------------------------
 # Sidebar
 # -----------------------------
-st.sidebar.title("📌 Panel")
+st.sidebar.title("Navegación")
 modo = st.sidebar.radio(
-    "Elige una vista",
+    "Sección",
     [
-        "Inicio ejecutivo",
-        "Modo exposición",
-        "Galería de gráficos",
-        "Storytelling del análisis",
-        "Checklist para presentar"
+        "Resumen del proyecto",
+        "Exploración por figura",
+        "Galería de resultados",
+        "Narrativa analítica",
+        "Lista de verificación"
     ]
 )
 
 st.sidebar.markdown("---")
-st.sidebar.markdown("### Archivos esperados")
+st.sidebar.markdown("**Estado de archivos**")
 for nombre, info in FIGURAS.items():
     status = "✅" if image_path(info["archivo"]).exists() else "⚠️"
     st.sidebar.write(f"{status} `{info['archivo']}`")
@@ -186,63 +197,55 @@ for nombre, info in FIGURAS.items():
 # -----------------------------
 st.markdown("""
 <div class="hero">
-<h1>Observatorio de Vulnerabilidad Silenciosa - Lima 2025</h1>
-<p>Dashboard de presentación para explicar la relación entre vulnerabilidad territorial y violencia contra la mujer usando minería de datos.</p>
+<h1>Vulnerabilidad Territorial y Violencia contra la Mujer en Lima Metropolitana</h1>
+<p>Análisis distrital mediante minería de datos — Proyecto de investigación 2025</p>
 </div>
 """, unsafe_allow_html=True)
 
 # -----------------------------
 # Páginas
 # -----------------------------
-if modo == "Inicio ejecutivo":
+if modo == "Resumen del proyecto":
     c1, c2, c3 = st.columns(3)
     with c1:
         st.markdown("""
         <div class="card">
-        <h3>🎯 Objetivo</h3>
-        <p>Analizar la relación entre vulnerabilidad territorial y violencia registrada contra la mujer a nivel distrital.</p>
+        <h3>Objetivo</h3>
+        <p>Examinar la relación entre vulnerabilidad territorial y violencia registrada contra la mujer a escala distrital en Lima Metropolitana.</p>
         </div>
         """, unsafe_allow_html=True)
     with c2:
         st.markdown("""
         <div class="card">
-        <h3>🧠 Técnicas</h3>
-        <p>TVM, índice de vulnerabilidad, correlación, PCA, NMF, K-Means y clustering jerárquico.</p>
+        <h3>Métodos</h3>
+        <p>Tasa de violencia contra la mujer (TVM), índice de vulnerabilidad, análisis de correlación, PCA, NMF, K-Means y clustering jerárquico.</p>
         </div>
         """, unsafe_allow_html=True)
     with c3:
         st.markdown("""
         <div class="card">
-        <h3>💡 Hallazgo clave</h3>
-        <p>La relación entre vulnerabilidad territorial y denuncia registrada no es lineal ni homogénea entre distritos.</p>
+        <h3>Hallazgo central</h3>
+        <p>La relación entre vulnerabilidad estructural y denuncia registrada no es lineal: los distritos con mayor precariedad no siempre presentan tasas más altas.</p>
         </div>
         """, unsafe_allow_html=True)
 
-    st.markdown("### Ruta de lectura del dashboard")
+    st.markdown("### Estructura del análisis")
     st.markdown("""
-    1. Primero se muestra el **mapa** para ubicar el problema territorialmente.  
-    2. Luego se analiza la relación entre **vulnerabilidad y TVM**.  
-    3. Después se justifica la reducción de dimensionalidad con **correlación y PCA**.  
-    4. Finalmente se presentan **clústeres**, NMF y dendrograma para evidenciar perfiles distritales diferenciados.
+    El análisis parte del diagnóstico territorial mediante un mapa de distribución distrital,
+    avanza hacia la exploración de la relación entre vulnerabilidad y TVM, y luego incorpora
+    técnicas de reducción de dimensionalidad y clustering para identificar perfiles distritales diferenciados.
+    La convergencia entre los métodos de agrupamiento —K-Means, NMF y Ward— refuerza la robustez de los resultados.
     """)
 
-    st.markdown("### Gráfico recomendado para iniciar")
+    st.markdown("### Vista de entrada")
     show_image_block("Mapa territorial", FIGURAS["Mapa territorial"])
 
-elif modo == "Modo exposición":
-    st.markdown("## Modo exposición")
-    st.markdown("Selecciona el gráfico y tendrás una lectura breve para decirlo en clase.")
-    seleccion = st.selectbox("Gráfico a presentar", list(FIGURAS.keys()))
+elif modo == "Exploración por figura":
+    st.markdown("## Exploración por figura")
+    seleccion = st.selectbox("Seleccionar resultado", list(FIGURAS.keys()))
     show_image_block(seleccion, FIGURAS[seleccion])
 
-    st.markdown("### Guion corto")
-    st.markdown(f"""
-    **Este gráfico muestra:** {FIGURAS[seleccion]['descripcion']}  
-    **La lectura principal es:** {FIGURAS[seleccion]['lectura']}  
-    **La idea para la profe:** {FIGURAS[seleccion]['uso']}
-    """)
-
-elif modo == "Galería de gráficos":
+elif modo == "Galería de resultados":
     st.markdown("## Galería de resultados")
     tabs = st.tabs(["Espacial", "Relación", "Correlación", "PCA", "Clustering", "Jerárquico"])
 
@@ -263,19 +266,20 @@ elif modo == "Galería de gráficos":
     with tabs[5]:
         show_image_block("Dendrograma Ward", FIGURAS["Dendrograma Ward"])
 
-elif modo == "Storytelling del análisis":
-    st.markdown("## Storytelling del análisis")
+elif modo == "Narrativa analítica":
+    st.markdown("## Narrativa analítica")
     st.markdown("""
-    Esta vista presenta el proyecto como una historia analítica, ideal para exponer en 3 a 5 minutos.
+    Esta vista presenta el proyecto como una secuencia analítica coherente,
+    desde el diagnóstico territorial hasta la identificación de perfiles distritales.
     """)
 
     pasos = [
-        ("1. El problema no es uniforme", "Mapa territorial"),
-        ("2. La vulnerabilidad no explica todo por sí sola", "Vulnerabilidad vs TVM"),
-        ("3. Las variables territoriales están conectadas", "Matriz de correlación"),
-        ("4. Se resume la complejidad con PCA", "Varianza PCA"),
-        ("5. Se forman perfiles distritales", "Clustering PCA"),
-        ("6. Se valida con una mirada jerárquica", "Dendrograma Ward"),
+        ("El problema tiene una dimensión espacial", "Mapa territorial"),
+        ("La vulnerabilidad no determina unívocamente la denuncia", "Vulnerabilidad vs TVM"),
+        ("Las variables territoriales comparten estructura latente", "Matriz de correlación"),
+        ("PCA reduce la complejidad sin perder información relevante", "Varianza PCA"),
+        ("K-Means identifica cinco perfiles distritales diferenciados", "Clustering PCA"),
+        ("El clustering jerárquico valida la partición de forma independiente", "Dendrograma Ward"),
     ]
 
     for titulo, key in pasos:
@@ -283,21 +287,20 @@ elif modo == "Storytelling del análisis":
         show_image_block(key, FIGURAS[key])
         st.divider()
 
-elif modo == "Checklist para presentar":
-    st.markdown("## Checklist final")
-    st.checkbox("Tengo la carpeta GRAFICOS al mismo nivel que app.py.")
-    st.checkbox("Los nombres de las imágenes coinciden exactamente con los esperados.")
-    st.checkbox("Puedo explicar en una frase qué muestra cada gráfico.")
-    st.checkbox("No digo que el modelo prueba causalidad; solo patrones y asociaciones.")
-    st.checkbox("Menciono que la baja TVM en distritos vulnerables puede sugerir barreras de denuncia, pero lo dejo como interpretación.")
-    st.checkbox("Cierro con el valor del dashboard: orientar análisis territorial y focalización pública.")
+elif modo == "Lista de verificación":
+    st.markdown("## Lista de verificación")
+    st.checkbox("La carpeta `graficos/` está al mismo nivel que `app.py`.")
+    st.checkbox("Los nombres de los archivos de imagen coinciden exactamente con los esperados.")
+    st.checkbox("Los resultados se presentan como patrones y asociaciones, sin afirmar causalidad.")
+    st.checkbox("La baja TVM en distritos vulnerables se interpreta como posible barrera de denuncia, no como ausencia de violencia.")
+    st.checkbox("El análisis cubre todas las etapas: diagnóstico, exploración, reducción dimensional y clustering.")
 
-    st.markdown("### Frase de cierre sugerida")
+    st.markdown("---")
     st.markdown("""
-    > El valor del dashboard es convertir los resultados del paper en una herramienta visual de decisión:
-    permite observar dónde se concentra la violencia registrada, qué distritos comparten perfiles territoriales
-    y dónde podrían existir señales de vulnerabilidad silenciosa.
+    El dashboard traduce los resultados del análisis en una herramienta de lectura territorial:
+    permite identificar dónde se concentra la violencia registrada, qué distritos comparten perfiles
+    estructurales similares y dónde pueden operar mecanismos de subregistro vinculados a la vulnerabilidad.
     """)
 
 st.sidebar.markdown("---")
-st.sidebar.caption("Proyecto de Data Mining | Lima Metropolitana 2025")
+st.sidebar.caption("Minería de Datos | Lima Metropolitana, 2025")

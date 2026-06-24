@@ -35,18 +35,16 @@ Salida: Datasets limpios en `data/processed/`
 
 ### Fase 1: Data Mining y Análisis (01-tareas_dm.ipynb)
 
-**Secciones principales:**
+Secciones principales y últimas modificaciones:
 
-1. **Carga y Preprocesamiento**: Integración de datasets limpios
-2. **Ingeniería de Características**:
-   - Tasa de Violencia contra la Mujer (TVM)
-   - Índice de Vulnerabilidad
-3. **Análisis Exploratorio (EDA)**:
-   - Visualización geográfica de patrones
-   - Análisis de distribuciones y relaciones entre variables
-4. **Análisis de Correlaciones**: Identificación de relaciones entre vulnerabilidad y violencia
-5. **Clustering**: Agrupación de distritos mediante K-Means, clustering jerárquico y NMF
-6. **Análisis de PCA**: Reducción de dimensionalidad y visualización
+1. Carga y Preprocesamiento: integra datasets limpios en la base final (base_final_lima).
+2. Ingeniería de Características: TVM, Índice de Vulnerabilidad, nuevas variables y tratamiento mejorado de NA.
+3. Análisis Exploratorio (EDA): mapas, distribuciones y relaciones entre variables.
+4. Análisis de Correlaciones: identificación de relaciones clave.
+5. Clustering: K-Means, jerárquico y NMF — parámetros guardados para reproducibilidad.
+6. PCA: reducción de dimensionalidad y visualización.
+
+Actualizaciones clave: 01-tareas_dm.ipynb fue actualizado con mejoras en la ingeniería de variables, persistencia de parámetros de clustering y pasos reproducibles que usan base_final_lima como la base final sobre la que se ejecutan los análisis.
 
 ## 📦 Requisitos
 
@@ -74,9 +72,15 @@ pip install -r requirements.txt
 ```
 
 ### 3. Ejecutar análisis
-- Primero ejecutar los notebooks **00** (en orden) para limpiar datos
-- Luego ejecutar **01-tareas_dm.ipynb** para el análisis de data mining
-- Para el dashboard interactivo, ejecutar `streamlit run streamlit_app.py`
+
+Orden secuencial del código:
+
+1. Ejecutar 00-limpieza-denuncias.ipynb
+2. Ejecutar 00-limpieza-enaho.ipynb
+3. Ejecutar 00-limpieza_poblacion.ipynb
+4. Ejecutar el script/notebook que crea la base final: base_final_lima (fusión/join de los outputs en data/processed/)
+5. Ejecutar 01-tareas_dm.ipynb (usa base_final_lima como entrada principal)
+6. (Opcional) Ejecutar dashboard: `streamlit run streamlit_app.py`
 
 ## 📊 Visualizaciones Generadas
 
