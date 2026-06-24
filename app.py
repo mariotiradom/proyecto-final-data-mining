@@ -78,7 +78,7 @@ st.markdown("""
 # -----------------------------
 # Configuración de imágenes
 # -----------------------------
-GRAFICOS_DIR = Path("notebooks")
+GRAFICOS_DIR = Path("graficos")
 
 FIGURAS = {
     "Mapa territorial": {
