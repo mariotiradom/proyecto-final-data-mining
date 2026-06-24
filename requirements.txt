@@ -7,3 +7,4 @@ pyreadstat
 openpyxl
 mlxtend
 scikit-learn
+streamlit
